@@ -1,0 +1,101 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+    var celsius = "C°";
+    var kelvin = "K°";
+    var fahrenheight = "F°";
+    var forecast = (ForecastVM)ViewData["forecast"];
+
+}
+
+<div class="row">
+    <div class="col-md-12 text-center">
+        <h1>Weather App</h1>
+        <div class="form">
+            <form method="post" class="form">
+                <div class="col-md-12">
+                    <input type="text" name="city" placeholder="Type in a city name" />
+                </div>
+                <div class="col-md-12">
+                    <p>Measurement unit:</p>
+                    <select name="unit">
+                        <option value="metric">Metric</option>
+                        <option value="imperial">Imperial</option>
+                        <option value="">Kelvin</option>
+                    </select>
+                </div>
+                <div class="col-md-12">
+                    <p>Language:</p>
+                    <select name="lang">
+                        <option value="en">English</option>
+                        <option value="ua">Ukrainian</option>
+                        <option value="ru">Russian</option>
+                    </select>
+                </div>
+                <input type="submit" value="Search" />
+            </form>
+            <p class="error">@ViewBag.errorMsg</p>
+            
+        </div>
+
+    </div>
+
+
+</div>
+<div class="row">
+    <div class="col-md-4">
+        @if (ViewBag.weather != null)
+        {<h1>Current Weather:</h1>
+            <h3>@ViewBag.weather.name</h3>
+            <h4>@ViewBag.weather.Weather[0].description<img src=@string.Format("http://openweathermap.org/img/w/{0}.png", ViewBag.weather.Weather[0].icon) /></h4>
+            
+
+            <p>
+                Temperature: @Math.Round(ViewBag.weather.Main.temp)
+                @if (ViewBag.unit == "metric")
+                {
+                    ViewBag.unit = celsius;
+                }
+                else if (ViewBag.unit == "imperial")
+                {
+                    ViewBag.unit = fahrenheight;
+                }
+                else
+                {
+                    ViewBag.unit = kelvin;
+                }
+                @ViewBag.unit
+            </p>
+            <p>Humidity: @ViewBag.weather.Main.humidity%</p>
+            <p>Wind: @Math.Round(ViewBag.weather.Wind.speed)m/s</p>
+        }
+    </div>
+    <div class="col-md-8">
+        @if (ViewBag.forecast != null)
+        {
+            <h1>5-day Forecast:</h1>
+            <h3>@ViewBag.forecast.City.name</h3>
+            <table>
+                <tr>
+                    @for (int i = 0; i < forecast.list.Count; i += 8)
+                    {
+                        <td>
+                            <p><b>@Convert.ToDateTime(forecast.list[i].dt_txt).ToShortDateString()</b></p>
+                            <p>@forecast.list[i].weather[0].description<img src="@string.Format("http://openweathermap.org/img/w/{0}.png", forecast.list[i].weather[0].icon)" style="width:40px;"/></p>
+                            <p>
+                                Temperature: @Math.Round(forecast.list[i].main.temp)
+                                @ViewBag.unit
+                            </p>
+                            <p>Humidity: @forecast.list[i].main.humidity%</p>
+                            <p>Wind: @(forecast.list[i].wind.speed)m/s</p>
+                        </td>
+
+                    }
+                </tr>
+
+            </table>
+
+
+        }
+
+    </div>
+</div>
