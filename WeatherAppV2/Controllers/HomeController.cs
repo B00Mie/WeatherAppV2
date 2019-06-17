@@ -13,6 +13,7 @@ namespace WeatherAppV2.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            //initializing viewbags for evading null reference exception
             ViewBag.weather = null;
             ViewData["forecast"] = null;
             return View();
@@ -21,12 +22,17 @@ namespace WeatherAppV2.Controllers
         [HttpPost]
         public IActionResult Index(string city, string unit, string lang)
         {
+            //trying to get data from API
             try
             {
+                //getting current weather
                 var weather = WeatherController.GetWeather(city, unit, lang);
 
+
+                //getting 5-day forecast
                 var forecast = WeatherController.GetForecast(city, unit, lang);
 
+                //adding some data to pass to our page
                 ViewBag.unit = unit;
                 ViewBag.weather = weather.Result;
                 ViewData["forecast"] = forecast.Result;
@@ -34,6 +40,7 @@ namespace WeatherAppV2.Controllers
             }
             catch(Exception ex)
             {
+                //handling possible errors
                 if(ex.Message.Contains("Not Found"))
                 {
                     ViewBag.errorMsg = "Cannot find city with given name, please try again...";

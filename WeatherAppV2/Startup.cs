@@ -18,6 +18,7 @@ namespace WeatherAppV2
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            //initializing our API client on startup
             ApiHelper.InitializeClient();
         }
 
